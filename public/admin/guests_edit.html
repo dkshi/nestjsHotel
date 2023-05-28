@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Управление гостями</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+        }
+
+        h2 {
+            color: #666;
+            font-size: 22px;
+            margin-top: 30px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            padding: 5px;
+            width: 200px;
+        }
+
+        button[type="submit"] {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        #searchResult,
+        #deleteResult,
+        #updateResult,
+        #createResult {
+            margin-top: 10px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Гости</h1>
+
+    <h2>Найти гостя по ID</h2>
+    <form id="searchForm">
+        <label for="searchId">ID гостя:</label>
+        <input type="number" id="searchId" name="searchId">
+        <button type="submit">Найти</button>
+    </form>
+    <div id="searchResult"></div>
+
+    <h2>Удалить гостя по ID</h2>
+    <form id="deleteForm">
+        <label for="deleteId">ID гостя:</label>
+        <input type="number" id="deleteId" name="deleteId">
+        <button type="submit">Удалить</button>
+    </form>
+    <div id="deleteResult"></div>
+
+    <h2>Обновить гостя по ID</h2>
+    <form id="updateForm">
+        <label for="updateId">ID гостя:</label>
+        <input type="number" id="updateId" name="updateId">
+        <br>
+        <label for="updateLastname">Фамилия:</label>
+        <input type="text" id="updateLastname" name="updateLastname">
+        <label for="updateFirstname">Имя:</label>
+        <input type="text" id="updateFirstname" name="updateFirstname">
+        <label for="updateSecondname">Отчество:</label>
+        <input type="text" id="updateSecondname" name="updateSecondname">
+        <label for="updateEmail">Email:</label>
+        <input type="text" id="updateEmail" name="updateEmail">
+        <label for="updatePhone">Телефон:</label>
+        <input type="text" id="updatePhone" name="updatePhone">
+        <label for="updateRoomId">ID комнаты:</label>
+        <input type="number" id="updateRoomId" name="updateRoomId">
+        <button type="submit">Обновить</button>
+    </form>
+    <div id="updateResult"></div>
+
+    <h2>Создать гостя</h2>
+    <form id="createForm">
+        <label for="createLastname">Фамилия:</label>
+        <input type="text" id="createLastname" name="createLastname">
+        <label for="createFirstname">Имя:</label>
+        <input type="text" id="createFirstname" name="createFirstname">
+        <label for="createSecondname">Отчество:</label>
+        <input type="text" id="createSecondname" name="createSecondname">
+        <label for="createEmail">Email:</label>
+        <input type="text" id="createEmail" name="createEmail">
+        <label for="createPhone">Телефон:</label>
+        <input type="text" id="createPhone" name="createPhone">
+        <label for="createRoomId">ID комнаты:</label>
+        <input type="number" id="createRoomId" name="createRoomId">
+        <button type="submit">Создать</button>
+    </form>
+    <div id="createResult"></div>
+
+    <h2>Гости</h2>
+    <table id="guestsTable">
+        <thead>
+            <tr>
+                <th>Guest ID</th>
+                <th>Фамилия</th>
+                <th>Имя</th>
+                <th>Отчество</th>
+                <th>Email</th>
+                <th>Телефон</th>
+                <th>ID комнаты</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+
+    <script>
+        function createTableRow(guest) {
+            var row = document.createElement("tr");
+            var guestIdCell = document.createElement("td");
+            guestIdCell.textContent = guest.guest_id;
+            var lastnameCell = document.createElement("td");
+            lastnameCell.textContent = guest.lastname;
+            var firstnameCell = document.createElement("td");
+            firstnameCell.textContent = guest.firstname;
+            var secondnameCell = document.createElement("td");
+            secondnameCell.textContent = guest.secondname;
+            var emailCell = document.createElement("td");
+            emailCell.textContent = guest.email;
+            var phoneCell = document.createElement("td");
+            phoneCell.textContent = guest.phone;
+            var roomIdCell = document.createElement("td");
+            roomIdCell.textContent = guest.room.room_id;
+            row.appendChild(guestIdCell);
+            row.appendChild(lastnameCell);
+            row.appendChild(firstnameCell);
+            row.appendChild(secondnameCell);
+            row.appendChild(emailCell);
+            row.appendChild(phoneCell);
+            row.appendChild(roomIdCell);
+            return row;
+        }
+
+        function populateTable(data) {
+            var tableBody = document.getElementById("tableBody");
+            tableBody.innerHTML = "";
+            data.forEach(function(guest) {
+                var row = createTableRow(guest);
+                tableBody.appendChild(row);
+            });
+        }
+
+        document.getElementById("searchForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var guestId = document.getElementById("searchId").value;
+            fetch("/guests/" + guestId)
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        document.getElementById("searchResult").textContent = JSON.stringify(data);
+                    } else {
+                        document.getElementById("searchResult").textContent = "Гость не найден.";
+                    }
+                })
+                .catch(error => {
+                    console.error("Ошибка:", error);
+                    document.getElementById("searchResult").textContent = "Произошла ошибка.";
+                });
+        });
+
+        document.getElementById("deleteForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var guestId = document.getElementById("deleteId").value;
+            fetch("/guests/" + guestId, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById("deleteResult").textContent = "Гость успешно удален!";
+                    } else {
+                        document.getElementById("deleteResult").textContent = "Не удалось удалить гостя";
+                    }
+                })
+                .catch(error => {
+                    console.error("Ошибка:", error);
+                    document.getElementById("deleteResult").textContent = "Произошла ошибка";
+                });
+        });
+
+        document.getElementById("updateForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var guestId = document.getElementById("updateId").value;
+            var updatedLastname = document.getElementById("updateLastname").value;
+            var updatedFirstname = document.getElementById("updateFirstname").value;
+            var updatedSecondname = document.getElementById("updateSecondname").value;
+            var updatedEmail = document.getElementById("updateEmail").value;
+            var updatedPhone = document.getElementById("updatePhone").value;
+            var updatedRoomId = document.getElementById("updateRoomId").value;
+            fetch("/guests/" + guestId, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    lastname: updatedLastname,
+                    firstname: updatedFirstname,
+                    secondname: updatedSecondname,
+                    email: updatedEmail,
+                    phone: updatedPhone,
+                    room_id: updatedRoomId
+                })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById("updateResult").textContent = "Гость успешно обновлен!";
+                    } else {
+                        document.getElementById("updateResult").textContent = "Не удалось обновить гостя.";
+                    }
+                })
+                .catch(error => {
+                    console.error("Ошибка:", error);
+                    document.getElementById("updateResult").textContent = "Произошла ошибка";
+                });
+        });
+
+        document.getElementById("createForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var lastname = document.getElementById("createLastname").value;
+            var firstname = document.getElementById("createFirstname").value;
+            var secondname = document.getElementById("createSecondname").value;
+            var email = document.getElementById("createEmail").value;
+            var phone = document.getElementById("createPhone").value;
+            var roomId = document.getElementById("createRoomId").value;
+            fetch("/guests", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    lastname: lastname,
+                    firstname: firstname,
+                    secondname: secondname,
+                    email: email,
+                    phone: phone,
+                    room: roomId
+                })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById("createResult").textContent = "Гость успешно создан!";
+                    } else {
+                        document.getElementById("createResult").textContent = "Не удалось создать гостя.";
+                    }
+                })
+                .catch(error => {
+                    console.error("Ошибка:", error);
+                    document.getElementById("createResult").textContent = "Произошла ошибка";
+                });
+        });
+
+        fetch("/guests")
+            .then(response => response.json())
+            .then(data => populateTable(data))
+            .catch(error => console.error("Ошибка:", error));
+    </script>
+</body>
+</html>
+

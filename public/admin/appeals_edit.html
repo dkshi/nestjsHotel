@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Управление обращениями</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+        }
+
+        h2 {
+            color: #666;
+            font-size: 22px;
+            margin-top: 30px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            padding: 5px;
+            width: 200px;
+        }
+
+        button[type="submit"] {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        #searchResult,
+        #deleteResult,
+        #updateResult {
+            margin-top: 10px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Обращения</h1>
+
+    <h2>Найти обращение по ID</h2>
+    <form id="searchForm">
+        <label for="searchId">ID обращения:</label>
+        <input type="number" id="searchId" name="searchId">
+        <button type="submit">Найти</button>
+    </form>
+    <div id="searchResult"></div>
+
+    <h2>Удалить обращение по ID</h2>
+    <form id="deleteForm">
+        <label for="deleteId">ID обращения:</label>
+        <input type="number" id="deleteId" name="deleteId">
+        <button type="submit">Удалить</button>
+    </form>
+    <div id="deleteResult"></div>
+
+    <h2>Обновить обращение по ID</h2>
+    <form id="updateForm">
+        <label for="updateId">ID обращения:</label>
+        <input type="number" id="updateId" name="updateId">
+        <br>
+        <label for="updateText">Новый текст:</label>
+        <input type="text" id="updateText" name="updateText">
+        <button type="submit">Обновить</button>
+    </form>
+    <div id="updateResult"></div>
+
+    <h2>Обращения</h2>
+    <table id="appealsTable">
+        <thead>
+            <tr>
+                <th>Appeal ID</th>
+                <th>Appeal Text</th>
+                <th>Guest</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+
+    <script>
+        function createTableRow(appeal) {
+            var row = document.createElement("tr");
+            var appealIdCell = document.createElement("td");
+            appealIdCell.textContent = appeal.appeal_id;
+            var appealTextCell = document.createElement("td");
+            appealTextCell.textContent = appeal.appeal_text;
+            var guestCell = document.createElement("td");
+            guestCell.textContent = getGuestInfo(appeal.guest);
+            row.appendChild(appealIdCell);
+            row.appendChild(appealTextCell);
+            row.appendChild(guestCell);
+            return row;
+        }
+
+        function getGuestInfo(guest) {
+            var guestInfo = "GuestID: " + guest.guest_id + " | ";
+            guestInfo += "Фамилия: " + guest.lastname + " | ";
+            guestInfo += "Имя: " + guest.firstname + " | ";
+            guestInfo += "Отчество: " + guest.secondname + " | ";
+            guestInfo += "Email: " + guest.email + " | ";
+            guestInfo += "Телефон: " + guest.phone;
+            return guestInfo;
+        }
+
+        function populateTable(data) {
+            var tableBody = document.getElementById("tableBody");
+            tableBody.innerHTML = "";
+            data.forEach(function(appeal) {
+                var row = createTableRow(appeal);
+                tableBody.appendChild(row);
+            });
+        }
+
+        document.getElementById("searchForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var appealId = document.getElementById("searchId").value;
+            fetch("/appeals/" + appealId)
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        document.getElementById("searchResult").textContent = JSON.stringify(data);
+                    } else {
+                        document.getElementById("searchResult").textContent = "Обращение не найдено.";
+                    }
+                })
+                .catch(error => {
+                    console.error("Ошибка:", error);
+                    document.getElementById("searchResult").textContent = "Произошла ошибка.";
+                });
+        });
+
+        document.getElementById("deleteForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var appealId = document.getElementById("deleteId").value;
+            fetch("/appeals/" + appealId, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById("deleteResult").textContent = "Обращение успешно удалено!";
+                    } else {
+                        document.getElementById("deleteResult").textContent = "Не удалось удалить обращение";
+                    }
+                })
+                .catch(error => {
+                    console.error("Ошибка:", error);
+                    document.getElementById("deleteResult").textContent = "Произошла ошибка";
+                });
+        });
+
+        document.getElementById("updateForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var appealId = document.getElementById("updateId").value;
+            var updatedText = document.getElementById("updateText").value;
+            fetch("/appeals/" + appealId, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    appeal_text: updatedText
+                })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById("updateResult").textContent = "Обращение успешно обновлено!";
+                    } else {
+                        document.getElementById("updateResult").textContent = "Не удалось обновить обращение.";
+                    }
+                })
+                .catch(error => {
+                    console.error("Ошибка:", error);
+                    document.getElementById("updateResult").textContent = "Произошла ошибка";
+                });
+        });
+
+        fetch("/appeals")
+            .then(response => response.json())
+            .then(data => populateTable(data))
+            .catch(error => console.error("Ошибка:", error));
+    </script>
+</body>
+</html>

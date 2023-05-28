@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Управление бронированиями</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+        }
+
+        h2 {
+            color: #666;
+            font-size: 22px;
+            margin-top: 30px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="number"],
+        input[type="text"],
+        input[type="date"] {
+            padding: 5px;
+            width: 200px;
+        }
+
+        button[type="submit"] {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        #searchResult,
+        #deleteResult,
+        #updateResult {
+            margin-top: 10px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Бронирования</h1>
+
+    <h2>Найти бронирование по ID</h2>
+    <form id="searchForm">
+        <label for="searchId">ID бронирования:</label>
+        <input type="number" id="searchId" name="searchId">
+        <button type="submit">Найти</button>
+    </form>
+    <div id="searchResult"></div>
+
+    <h2>Удалить бронирование по ID</h2>
+    <form id="deleteForm">
+        <label for="deleteId">ID бронирования:</label>
+        <input type="number" id="deleteId" name="deleteId">
+        <button type="submit">Удалить</button>
+    </form>
+    <div id="deleteResult"></div>
+
+    <h2>Обновить бронирование по ID</h2>
+    <form id="updateForm">
+        <label for="updateId">ID бронирования:</label>
+        <input type="number" id="updateId" name="updateId">
+        <br>
+        <label for="updateStartDate">Новая дата начала:</label>
+    <input type="date" id="updateStartDate" name="updateStartDate">
+    <br>
+    <label for="updateEndDate">Новая дата окончания:</label>
+    <input type="date" id="updateEndDate" name="updateEndDate">
+    <button type="submit">Обновить</button>
+</form>
+<div id="updateResult"></div>
+
+<h2>Бронирования</h2>
+<table id="bookingsTable">
+    <thead>
+        <tr>
+            <th>Booking ID</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+        </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+</table>
+
+<script>
+    function createTableRow(booking) {
+        var row = document.createElement("tr");
+        var bookingIdCell = document.createElement("td");
+        bookingIdCell.textContent = booking.booking_id;
+        var emailCell = document.createElement("td");
+        emailCell.textContent = booking.email;
+        var phoneCell = document.createElement("td");
+        phoneCell.textContent = booking.phone;
+        var startDateCell = document.createElement("td");
+        startDateCell.textContent = booking.startdate;
+        var endDateCell = document.createElement("td");
+        endDateCell.textContent = booking.enddate;
+        row.appendChild(bookingIdCell);
+        row.appendChild(emailCell);
+        row.appendChild(phoneCell);
+        row.appendChild(startDateCell);
+        row.appendChild(endDateCell);
+        return row;
+    }
+
+    function populateTable(data) {
+        var tableBody = document.getElementById("tableBody");
+        tableBody.innerHTML = "";
+        data.forEach(function(booking) {
+            var row = createTableRow(booking);
+            tableBody.appendChild(row);
+        });
+    }
+
+    document.getElementById("searchForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        var bookingId = document.getElementById("searchId").value;
+        fetch("/bookings/" + bookingId)
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    document.getElementById("searchResult").textContent = JSON.stringify(data);
+                } else {
+                    document.getElementById("searchResult").textContent = "Бронирование не найдено.";
+                }
+            })
+            .catch(error => {
+                console.error("Ошибка:", error);
+                document.getElementById("searchResult").textContent = "Произошла ошибка.";
+            });
+    });
+
+    document.getElementById("deleteForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        var bookingId = document.getElementById("deleteId").value;
+        fetch("/bookings/" + bookingId, {
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById("deleteResult").textContent = "Бронирование успешно удалено!";
+                } else {
+                    document.getElementById("deleteResult").textContent = "Не удалось удалить бронирование";
+                }
+            })
+            .catch(error => {
+                console.error("Ошибка:", error);
+                document.getElementById("deleteResult").textContent = "Произошла ошибка";
+            });
+    });
+
+    document.getElementById("updateForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        var bookingId = document.getElementById("updateId").value;
+        var updatedStartDate = document.getElementById("updateStartDate").value;
+        var updatedEndDate = document.getElementById("updateEndDate").value;
+        fetch("/bookings/" + bookingId, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                startdate: updatedStartDate,
+                enddate: updatedEndDate
+            })
+        })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById("updateResult").textContent = "Бронирование успешно обновлено!";
+                } else {
+                    document.getElementById("updateResult").textContent = "Не удалось обновить бронирование.";
+                }
+            })
+            .catch(error => {
+                console.error("Ошибка:", error);
+                document.getElementById("updateResult").textContent = "Произошла ошибка";
+            });
+    });
+
+    fetch("/bookings")
+        .then(response => response.json())
+        .then(data => populateTable(data))
+        .catch(error => console.error("Ошибка:", error));
+</script>
+</body>
+</html>

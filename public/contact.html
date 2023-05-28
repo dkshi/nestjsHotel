@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Savosin Imperial Plaza - Апелляция</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    
+    <style>
+      .appeal-form {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .appeal-form label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold; 
+      }
+
+      .appeal-form input[type="text"],
+      .appeal-form textarea{ 
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        margin-bottom: 20px;
+        background-color: #333;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+      }
+
+      .appeal-form textarea {
+        height: 150px;
+      }
+
+      .appeal-form input[type="text"]:focus,
+      .appeal-form textarea:focus { 
+        outline: none;
+        background-color: #555;
+      }
+
+      .appeal-form button {
+        background-color: #99FF99;
+        border: none;
+        color: #333333;
+        padding: 12px 30px;
+        font-size: 18px;
+        cursor: pointer;
+        border-radius: 50px;
+        display: inline-block;
+        font-weight: bold;
+        text-decoration: none;
+      }
+
+      .appeal-form button:hover {
+        background-color: #88CC88;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a class="logo" href="index.html">Savosin</a>
+      <nav>
+        <ul>
+          <li><a href="catalog.html">Каталог номеров</a></li>
+          <li><a href="#">Услуги</a></li>
+          <li><a href="contact.html">Контакты</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="content">
+      <div class="appeal-form">
+        <form action="/appeals" method="POST">
+            <input type="text" id="guest-id" name="guest" placeholder="Введите ваш гостевой айди" required> 
+          <textarea id="appeal-text" name="appeal_text" placeholder="Введите текст" required></textarea> 
+
+          <button type="submit">Отправить</button>
+        </form>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2023 Savosin Imperial Plaza. Все права защищены.</p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Отель - Номер "Стандарт"</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">  
+</head>
+<body>
+	<header>
+      <a class="logo" href="index.html">Savosin</a>
+      <nav>
+        <ul>
+          <li><a href="catalog.html">Каталог номеров</a></li>
+          <li><a href="#">Услуги</a></li>
+          <li><a href="contact.html">Контакты</a></li>
+        </ul>
+      </nav>
+	</header>
+
+    <div class="container">
+        <div class="room-image">
+          <img src="https://www.travelline.ru/resource/images/rt/172243/637847537660843252-f7f0a283-def4-4c5c-b9c7-9ca5ff856025" alt="Room Image" class="popup-image" onclick="openImage()">
+          <div class="room-info">
+            <h2>Номер «Люкс»</h2>
+            <p>Просторный номер с красивым видом на город. В номере есть все необходимое для комфортного проживания.</p>
+            <a href="booking.html" class="book-btn">Забронировать</a>
+          </div>
+        </div>
+        <div class="room-features">
+          <h3>Характеристики номера</h3>
+          <ul>
+            <li>Площадь номера: 30 кв.м.</li>
+            <li>Кровать размера «king-size»</li>
+            <li>Кондиционер</li>
+            <li>Телевизор с плоским экраном</li>
+            <li>Бесплатный Wi-Fi</li>
+            <li>Ванная комната с душем</li>
+          </ul>
+        </div>
+      </div>
+	<footer>
+		<p>&copy; 2023 Savosin Imperial Plaza. Все права защищены.</p>
+	</footer>
+	<div id="popup">
+		<img src="https://www.travelline.ru/resource/images/rt/172243/637847537660843252-f7f0a283-def4-4c5c-b9c7-9ca5ff856025" alt="Стандарт">
+		<button onclick="closeImage()">Закрыть</button>
+	</div>
+	<script>
+		function openImage() {
+			document.getElementById("popup").style.display = "block";
+		}
+
+		function closeImage() {
+			document.getElementById("popup").style.display = "none";
+		}
+	</script>
+</body>
+</html>

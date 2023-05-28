@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Отель - Номер "Стандарт"</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">  
+</head>
+<body>
+	<header>
+      <a class="logo" href="index.html">Savosin</a>
+      <nav>
+        <ul>
+          <li><a href="catalog.html">Каталог номеров</a></li>
+          <li><a href="#">Услуги</a></li>
+          <li><a href="contact.html">Контакты</a></li>
+        </ul>
+      </nav>
+	</header>
+
+    <div class="container">
+        <div class="room-image">
+          <img src="https://www.travelline.ru/resource/images/rt/172229/637850111355749371-15a518bc-09e0-427a-99d2-3738dd0acf58" alt="Room Image" class="popup-image" onclick="openImage()">
+          <div class="room-info">
+            <h2>Номер «Стандарт»</h2>
+            <p>Уютный номер для проживания одного человека. Идеальное место для отдыха во время командировки или путешествия.</p>
+            <a href="booking.html" class="book-btn">Забронировать</a>
+          </div>
+        </div>
+        <div class="room-features">
+          <h3>Характеристики номера</h3>
+          <ul>
+            <li>Площадь номера: 10 кв.м.</li>
+            <li>Кондиционер</li>
+            <li>Телевизор с плоским экраном</li>
+            <li>Бесплатный Wi-Fi</li>
+            <li>Ванная комната с душем</li>
+          </ul>
+        </div>
+      </div>
+	<footer>
+		<p>&copy; 2023 Savosin Imperial Plaza. Все права защищены.</p>
+	</footer>
+	<div id="popup">
+		<img src="https://www.travelline.ru/resource/images/rt/172229/637850111355749371-15a518bc-09e0-427a-99d2-3738dd0acf58" alt="Стандарт">
+		<button onclick="closeImage()">Закрыть</button>
+	</div>
+	<script>
+		function openImage() {
+			document.getElementById("popup").style.display = "block";
+		}
+
+		function closeImage() {
+			document.getElementById("popup").style.display = "none";
+		}
+	</script>
+</body>
+</html>

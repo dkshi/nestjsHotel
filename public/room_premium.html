@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Номер "Премиум"</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">  
+</head>
+<body>
+	<header>
+      <a class="logo" href="index.html">Savosin</a>
+      <nav>
+        <ul>
+          <li><a href="catalog.html">Каталог номеров</a></li>
+          <li><a href="#">Услуги</a></li>
+          <li><a href="contact.html">Контакты</a></li>
+        </ul>
+      </nav>
+	</header>
+
+    <div class="container">
+        <div class="room-image">
+          <img src="https://www.travelline.ru/resource/images/rt/174093/637973663093899559-5a960559-4f8c-45e3-89b8-348021901588" alt="Room Image" class="popup-image" onclick="openImage()">
+          <div class="room-info">
+            <h2>Номер «Премиум»</h2>
+            <p>В Президентском Люксе 2 роскошные спальни с кроватями размера king, великолепная гостиная вместимостью до 10 человек, отдельная кухня, оборудованная кофе-машиной, 2 просторные ванные комнаты.</p>
+            <a href="booking.html" class="book-btn">Забронировать</a>
+          </div>
+        </div>
+        <div class="room-features">
+          <h3>Характеристики номера</h3>
+          <ul>
+            <li>Площадь номера: 160 кв.м.</li>
+            <li>Панорамные окна</li>
+            <li>Три телевизора</li>
+            <li>Бесплатный Wi-Fi</li>
+            <li>Две ванные комнаты</li>
+            <li>Вид на город</li>
+          </ul>
+        </div>
+      </div>
+	<footer>
+		<p>&copy; 2023 Savosin Imperial Plaza. Все права защищены.</p>
+	</footer>
+	<div id="popup">
+		<img src="https://www.travelline.ru/resource/images/rt/174093/637973663093899559-5a960559-4f8c-45e3-89b8-348021901588" alt="Стандарт">
+		<button onclick="closeImage()">Закрыть</button>
+	</div>
+	<script>
+		function openImage() {
+			document.getElementById("popup").style.display = "block";
+		}
+
+		function closeImage() {
+			document.getElementById("popup").style.display = "none";
+		}
+	</script>
+</body>
+</html>
